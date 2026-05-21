@@ -26,7 +26,7 @@ const ProductModule = {
           formData.append('description', document.getElementById('prod-desc').value);
           formData.append('price', document.getElementById('prod-price').value);
           formData.append('stock', document.getElementById('prod-stock').value);
-          formData.append('is_on_sale', document.getElementById('prod-sale').checked);
+          formData.append('is_on_sale', false);
           
           const imageFile = document.getElementById('prod-image').files[0];
           if (imageFile) {
@@ -65,7 +65,7 @@ const ProductModule = {
                 formData.append('description', document.getElementById('edit-prod-desc').value);
                 formData.append('price', document.getElementById('edit-prod-price').value);
                 formData.append('stock', document.getElementById('edit-prod-stock').value);
-                formData.append('is_on_sale', document.getElementById('edit-prod-sale').checked);
+                formData.append('is_on_sale', !document.getElementById('edit-prod-sale').checked);
                 formData.append('existing_image_url', document.getElementById('edit-prod-existing-image').value);
                 
                 const imageFile = document.getElementById('edit-prod-image').files[0];
@@ -159,7 +159,7 @@ const ProductModule = {
       document.getElementById('edit-prod-stock').value = product.stock;
       document.getElementById('edit-prod-existing-image').value = product.image_url || '';
       document.getElementById('edit-prod-image').value = ''; // Reset file input
-      document.getElementById('edit-prod-sale').checked = !!product.is_on_sale;
+      document.getElementById('edit-prod-sale').checked = !product.is_on_sale;
       
       document.getElementById('edit-product-modal').classList.add('active');
   },

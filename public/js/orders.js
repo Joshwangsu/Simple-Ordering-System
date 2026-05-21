@@ -248,6 +248,14 @@ const OrderModule = {
                 <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>CANCELLED</option>
              </select>
           `;
+      } else {
+          if (order.status === 'pending') {
+              statusHtml += `
+                 <button class="btn btn-danger btn-sm" style="margin-left: 12px; transform: translateY(-2px);" onclick="OrderModule.cancelOrder(${order.id})">
+                   <i data-lucide="x-circle" style="width:14px;"></i> Cancel Order
+                 </button>
+              `;
+          }
       }
       
       content.innerHTML = `
@@ -305,6 +313,18 @@ const OrderModule = {
          select.className = `badge status-${newStatus}`;
       }
       
+      await this.loadOrders();
+    } catch (error) {
+      utils.showToast(error.message, 'error');
+    }
+  },
+
+  async cancelOrder(id) {
+    if (!confirm('Are you sure you want to cancel this order?')) return;
+    try {
+      await api.cancelOrder(id);
+      utils.showToast('Order cancelled successfully');
+      document.getElementById('order-modal').classList.remove('active');
       await this.loadOrders();
     } catch (error) {
       utils.showToast(error.message, 'error');

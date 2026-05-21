@@ -47,6 +47,7 @@ const placeOrder = async ({ customer_id, items }) => {
     }
 
     await conn.commit();
+    return await getOrderById(orderId);
   } catch (err) {
     await conn.rollback();
     throw err;

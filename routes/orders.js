@@ -62,4 +62,19 @@ router.patch('/:id/status', verifyToken, requireRole('admin'), async (req, res) 
   }
 });
 
+// PATCH /api/orders/:id/cancel (Buyer Only)
+router.patch('/:id/cancel', verifyToken, requireRole('buyer'), async (req, res) => {
+  try {
+    const order = await orderService.getOrderById(req.params.id);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    if (order.customer_id !== req.user.id) return res.status(403).json({ error: 'Access denied' });
+    if (order.status !== 'pending') return res.status(400).json({ error: 'Only pending orders can be cancelled' });
+    
+    const updatedOrder = await orderService.updateOrderStatus(req.params.id, 'cancelled');
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

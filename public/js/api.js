@@ -83,7 +83,8 @@ const api = {
   getOrders: () => api.request('/orders'),
   getOrderById: (id) => api.request(`/orders/${id}`),
   placeOrder: (data) => api.request('/orders', 'POST', data),
-  updateOrderStatus: (id, status) => api.request(`/orders/${id}/status`, 'PATCH', { status })
+  updateOrderStatus: (id, status) => api.request(`/orders/${id}/status`, 'PATCH', { status }),
+  cancelOrder: (id) => api.request(`/orders/${id}/cancel`, 'PATCH')
 };
 
 // UI Utilities
