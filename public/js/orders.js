@@ -12,6 +12,8 @@ const OrderModule = {
       // Hide customer column header in orders view
       const thCustomer = document.getElementById('th-customer');
       if (thCustomer) thCustomer.style.display = 'none';
+    } else if (user && user.role === 'admin') {
+      await this.loadOrders();
     }
   },
 
