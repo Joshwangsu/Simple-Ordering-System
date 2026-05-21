@@ -80,6 +80,20 @@ router.put('/:id', verifyToken, requireRole('admin'), upload.single('image'), as
   }
 });
 
+// PATCH /api/products/:id/sale (Admin Only)
+router.patch('/:id/sale', verifyToken, requireRole('admin'), async (req, res) => {
+  try {
+    const product = await productService.getProductById(req.params.id);
+    if (!product) return res.status(404).json({ error: 'Product not found' });
+    
+    product.is_on_sale = req.body.is_on_sale;
+    const updatedProduct = await productService.updateProduct(req.params.id, product);
+    res.json(updatedProduct);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // DELETE /api/products/:id (Admin Only)
 router.delete('/:id', verifyToken, requireRole('admin'), async (req, res) => {
   try {

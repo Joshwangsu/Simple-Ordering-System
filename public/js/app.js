@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     mainApp.classList.remove('hidden');
     document.getElementById('password-modal').classList.remove('active');
     
-    document.getElementById('user-display-name').textContent = user.name;
+    document.getElementById('user-display-name').textContent = `${user.first_name} ${user.last_name}`;
 
     // Render Sidebar based on role
     renderSidebar(user.role);

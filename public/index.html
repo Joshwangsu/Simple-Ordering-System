@@ -94,6 +94,16 @@
               </div>
             </div>
           </div>
+          
+          <div class="panel" style="margin-top: 24px;">
+            <h2>Recent Orders</h2>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead><tr><th>Order ID</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th></tr></thead>
+                <tbody id="dashboard-recent-orders"></tbody>
+              </table>
+            </div>
+          </div>
         </section>
 
         <!-- Customers View (Admin) -->
@@ -282,7 +292,7 @@
           </div>
         </div>
         <div class="form-group-row">
-          <div class="form-group" style="flex: 2;">
+          <div class="form-group" style="width: 100%;">
             <label>Update Image <span class="text-muted">(Leave empty to keep existing)</span></label>
             <div style="display:flex; align-items:center; gap: 12px;">
               <label for="edit-prod-image" class="btn btn-secondary" style="cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
@@ -292,12 +302,6 @@
             </div>
             <input type="file" id="edit-prod-image" accept="image/*" style="display:none;" onchange="document.getElementById('edit-prod-image-name').textContent = this.files[0] ? this.files[0].name : 'No file chosen'">
             <input type="hidden" id="edit-prod-existing-image">
-          </div>
-          <div class="form-group" style="flex: 1; display: flex; align-items: flex-end; padding-bottom: 10px;">
-            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0;">
-              <input type="checkbox" id="edit-prod-sale" style="width: auto; height: 18px; margin: 0;">
-              Offsale
-            </label>
           </div>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">Update Product</button>

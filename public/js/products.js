@@ -26,7 +26,7 @@ const ProductModule = {
           formData.append('description', document.getElementById('prod-desc').value);
           formData.append('price', document.getElementById('prod-price').value);
           formData.append('stock', document.getElementById('prod-stock').value);
-          formData.append('is_on_sale', false);
+          formData.append('is_on_sale', true);
           
           const imageFile = document.getElementById('prod-image').files[0];
           if (imageFile) {
@@ -65,7 +65,9 @@ const ProductModule = {
                 formData.append('description', document.getElementById('edit-prod-desc').value);
                 formData.append('price', document.getElementById('edit-prod-price').value);
                 formData.append('stock', document.getElementById('edit-prod-stock').value);
-                formData.append('is_on_sale', !document.getElementById('edit-prod-sale').checked);
+                // Preserve current sale state (managed via toggle button, not this form)
+                const cachedProduct = this.productsCache.find(p => p.id == id);
+                formData.append('is_on_sale', cachedProduct ? cachedProduct.is_on_sale : true);
                 formData.append('existing_image_url', document.getElementById('edit-prod-existing-image').value);
                 
                 const imageFile = document.getElementById('edit-prod-image').files[0];
@@ -128,6 +130,7 @@ const ProductModule = {
       const adminActions = isAdmin 
         ? `<div style="display:flex; gap:8px; margin-top:16px; border-top:1px solid var(--color-border); padding-top:16px;">
              <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="ProductModule.openEditModal(${p.id})"><i data-lucide="edit-2" style="width:14px;"></i> Edit</button>
+             <button class="btn ${p.is_on_sale ? 'btn-secondary' : 'btn-primary'} btn-sm" onclick="ProductModule.toggleSale(${p.id}, ${p.is_on_sale})" title="${p.is_on_sale ? 'Take Off Sale' : 'Put On Sale'}"><i data-lucide="${p.is_on_sale ? 'eye-off' : 'eye'}" style="width:14px;"></i></button>
              <button class="btn btn-danger btn-sm" onclick="ProductModule.deleteProduct(${p.id})"><i data-lucide="trash-2" style="width:14px;"></i></button>
            </div>`
         : '';
@@ -141,6 +144,7 @@ const ProductModule = {
         <div class="product-price">${utils.formatCurrency(p.price)}</div>
         <div class="product-stock ${p.stock > 0 ? '' : 'text-danger'}" style="display:flex; align-items:center; gap:8px;">
           <i data-lucide="package" style="width:16px; height:16px;"></i> Stock: ${p.stock}
+          ${p.stock > 0 && p.stock <= 5 ? '<span class="badge status-pending" style="font-size: 10px; padding: 2px 6px;">LOW STOCK</span>' : ''}
         </div>
         ${adminActions}
       </div>
@@ -159,7 +163,6 @@ const ProductModule = {
       document.getElementById('edit-prod-stock').value = product.stock;
       document.getElementById('edit-prod-existing-image').value = product.image_url || '';
       document.getElementById('edit-prod-image').value = ''; // Reset file input
-      document.getElementById('edit-prod-sale').checked = !product.is_on_sale;
       
       document.getElementById('edit-product-modal').classList.add('active');
   },
@@ -178,5 +181,15 @@ const ProductModule = {
   
   getProductsList() {
     return this.productsCache;
+  },
+
+  async toggleSale(id, currentState) {
+    try {
+      await api.request(`/products/${id}/sale`, 'PATCH', { is_on_sale: !currentState });
+      utils.showToast(currentState ? 'Product taken off sale' : 'Product put on sale');
+      await this.loadProducts();
+    } catch (error) {
+      utils.showToast(error.message, 'error');
+    }
   }
 };
