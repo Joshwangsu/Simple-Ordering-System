@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EasyOrder</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- LOGIN VIEW -->
+  <div id="login-app" class="login-container">
+    <div class="login-box">
+      <div class="login-header">
+        <img src="Logo.png" alt="EasyOrder Logo" style="width: 48px; height: 48px; display: block; margin: 0 auto 16px;">
+        <h1>EasyOrder</h1>
+        <p class="text-muted">Sign in to your account</p>
+      </div>
+      <form id="login-form">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" required placeholder="name@company.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN APP VIEW (Admin / Buyer) -->
+  <div id="main-app" class="app-container hidden">
+    <nav class="sidebar">
+      <div class="logo">
+        <img src="Logo.png" alt="EasyOrder Logo" style="width: 24px; height: 24px;">
+        <span>EasyOrder</span>
+      </div>
+      <ul class="nav-links" id="sidebar-links">
+        <!-- Injected via JS based on role -->
+      </ul>
+      <div style="padding: 16px;">
+        <button id="logout-btn" class="btn btn-secondary" style="width: 100%;"><i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Logout</button>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <header class="top-bar">
+        <h1 id="page-title" style="margin: 0;">Dashboard</h1>
+        <div class="user-profile">
+          <span id="user-display-name">User</span>
+          <div style="width: 32px; height: 32px; background: var(--color-overlay); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-border);">
+            <i data-lucide="user" style="width: 16px; height: 16px; color: var(--color-text-secondary);"></i>
+          </div>
+        </div>
+      </header>
+
+      <div class="content-area">
+        
+        <!-- ADMIN VIEWS -->
+        
+        <!-- Dashboard View (Admin) -->
+        <section id="dashboard-view" class="view">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon"><i data-lucide="users"></i></div>
+              <div class="stat-info">
+                <h3>Total Customers</h3>
+                <p id="stat-customers">0</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i data-lucide="package"></i></div>
+              <div class="stat-info">
+                <h3>Products Available</h3>
+                <p id="stat-products">0</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i data-lucide="shopping-cart"></i></div>
+              <div class="stat-info">
+                <h3>Total Orders</h3>
+                <p id="stat-orders">0</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i data-lucide="dollar-sign"></i></div>
+              <div class="stat-info">
+                <h3>Total Revenue</h3>
+                <p id="stat-revenue">$0.00</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Customers View (Admin) -->
+        <section id="customers-view" class="view">
+          <div class="panel">
+            <h2>Register Customer</h2>
+            <form id="customer-form">
+              <div class="form-group-row">
+                <div class="form-group">
+                  <label>First Name</label>
+                  <input type="text" id="cust-first-name" required>
+                </div>
+                <div class="form-group">
+                  <label>Middle Name <span class="text-muted">(Optional)</span></label>
+                  <input type="text" id="cust-middle-name">
+                </div>
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input type="text" id="cust-last-name" required>
+                </div>
+              </div>
+              <div class="form-group-row">
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input type="email" id="cust-email" required>
+                </div>
+                <div class="form-group">
+                  <label>Phone</label>
+                  <input type="tel" id="cust-phone">
+                </div>
+                <div class="form-group">
+                  <label>Address</label>
+                  <input type="text" id="cust-address">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Register Customer</button>
+            </form>
+          </div>
+          
+          <div class="panel">
+            <h2>Customer Directory</h2>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th></tr></thead>
+                <tbody id="customers-list"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Products View (Admin) -->
+        <section id="products-view" class="view">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h2>Manage Products</h2>
+            <button class="btn btn-primary" onclick="document.getElementById('add-product-modal').classList.add('active')">
+              <i data-lucide="plus"></i> Add New Product
+            </button>
+          </div>
+          <div class="panel">
+            <div class="product-grid" id="products-list"></div>
+          </div>
+        </section>
+
+
+        <!-- BUYER VIEWS -->
+
+        <!-- Place Order View (Buyer) -->
+        <section id="place-order-view" class="view">
+          <div class="order-layout">
+            <div class="bento-container">
+              <h2 style="margin-bottom: 24px;">Menu</h2>
+              <div class="bento-grid" id="bento-grid-container">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+            
+            <div class="cart-sidebar">
+              <div class="cart-header">
+                <h3><i data-lucide="shopping-cart"></i> Your Cart</h3>
+                <span class="cart-badge" id="cart-count">0</span>
+              </div>
+              <div class="cart-items" id="cart-items-container">
+                <div class="cart-empty">Your cart is empty.<br>Select items from the menu to add them.</div>
+              </div>
+              <div class="cart-footer">
+                <div class="cart-total">
+                  <span class="cart-total-label">Total Amount</span>
+                  <span class="cart-total-val" id="cart-total-amount">$0.00</span>
+                </div>
+                <button id="cart-checkout-btn" class="btn btn-primary" style="width: 100%;" disabled>Place Order</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- View Orders (Shared, but behavior differs via JS) -->
+        <section id="orders-view" class="view">
+           <div class="panel">
+            <h2>Orders</h2>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead><tr><th>Order ID</th><th id="th-customer">Customer</th><th>Date</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="orders-list"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Shared Order Details Modal -->
+  <div id="order-modal" class="modal">
+    <div class="modal-content panel" style="position: relative;">
+      <i data-lucide="x" class="close-modal"></i>
+      <h2 style="margin-bottom: 24px;">Order Details</h2>
+      <div id="modal-order-content"></div>
+    </div>
+  </div>
+
+  <!-- Add Product Modal (Admin) -->
+  <div id="add-product-modal" class="modal">
+    <div class="modal-content panel" style="position: relative;">
+      <i data-lucide="x" class="close-modal" onclick="document.getElementById('add-product-modal').classList.remove('active')"></i>
+      <h2 style="margin-bottom: 24px;">Add New Product</h2>
+      <form id="product-form">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="prod-name" required>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="prod-desc"></textarea>
+        </div>
+        <div class="form-group-row">
+          <div class="form-group">
+            <label>Price</label>
+            <input type="number" id="prod-price" required step="0.01" min="0">
+          </div>
+          <div class="form-group">
+            <label>Stock</label>
+            <input type="number" id="prod-stock" required min="0">
+          </div>
+        </div>
+        <div class="form-group-row">
+          <div class="form-group" style="flex: 2;">
+            <label>Product Image <span class="text-muted">(Optional)</span></label>
+            <input type="file" id="prod-image" accept="image/*">
+          </div>
+          <div class="form-group" style="flex: 1; display: flex; align-items: flex-end; padding-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0;">
+              <input type="checkbox" id="prod-sale" checked style="width: auto; height: 18px; margin: 0;">
+              Is On Sale
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">Add Product</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Product Modal (Admin) -->
+  <div id="edit-product-modal" class="modal">
+    <div class="modal-content panel" style="position: relative;">
+      <i data-lucide="x" class="close-modal" onclick="document.getElementById('edit-product-modal').classList.remove('active')"></i>
+      <h2 style="margin-bottom: 24px;">Edit Product</h2>
+      <form id="edit-product-form">
+        <input type="hidden" id="edit-prod-id">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="edit-prod-name" required>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="edit-prod-desc"></textarea>
+        </div>
+        <div class="form-group-row">
+          <div class="form-group">
+            <label>Price</label>
+            <input type="number" id="edit-prod-price" required step="0.01" min="0">
+          </div>
+          <div class="form-group">
+            <label>Stock</label>
+            <input type="number" id="edit-prod-stock" required min="0">
+          </div>
+        </div>
+        <div class="form-group-row">
+          <div class="form-group" style="flex: 2;">
+            <label>Update Image <span class="text-muted">(Leave empty to keep existing)</span></label>
+            <input type="file" id="edit-prod-image" accept="image/*">
+            <input type="hidden" id="edit-prod-existing-image">
+          </div>
+          <div class="form-group" style="flex: 1; display: flex; align-items: flex-end; padding-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0;">
+              <input type="checkbox" id="edit-prod-sale" style="width: auto; height: 18px; margin: 0;">
+              Is On Sale
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">Update Product</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Customer Modal (Admin) -->
+  <div id="edit-customer-modal" class="modal">
+    <div class="modal-content panel" style="position: relative;">
+      <i data-lucide="x" class="close-modal" onclick="document.getElementById('edit-customer-modal').classList.remove('active')"></i>
+      <h2 style="margin-bottom: 24px;">Edit Customer</h2>
+      <form id="edit-customer-form">
+        <input type="hidden" id="edit-cust-id">
+        <div class="form-group-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" id="edit-cust-first-name" required>
+          </div>
+          <div class="form-group">
+            <label>Middle Name <span class="text-muted">(Optional)</span></label>
+            <input type="text" id="edit-cust-middle-name">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="edit-cust-last-name" required>
+          </div>
+        </div>
+        <div class="form-group-row">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="edit-cust-email" required>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" id="edit-cust-phone">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" id="edit-cust-address">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">Update Customer</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Change Password Modal (First Login) -->
+  <div id="password-modal" class="modal" style="background: var(--color-canvas);">
+    <div class="modal-content panel">
+      <h2>Change Default Password</h2>
+      <p class="text-muted" style="margin-bottom: 24px;">For security reasons, please change the default password provided by your administrator.</p>
+      <form id="password-form">
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="new-password" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Update Password</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- JS Modules -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/customers.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/orders.js"></script>
+  
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>
